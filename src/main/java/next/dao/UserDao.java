@@ -39,7 +39,6 @@ public class UserDao {
         // TODO 구현 필요함.
         Connection con = null;
         PreparedStatement pstmt = null;
-        ResultSet rs = null;
         try {
             con = ConnectionManager.getConnection();
             String sql = "UPDATE USERS SET password=?, name=?, email=? WHERE userId=?";
@@ -51,9 +50,6 @@ public class UserDao {
             
             pstmt.executeUpdate();
         } finally {
-            if (rs != null) {
-                rs.close();
-            }
             if (pstmt != null) {
                 pstmt.close();
             }
