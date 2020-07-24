@@ -7,12 +7,15 @@ import java.sql.SQLException;
 import core.jdbc.ConnectionManager;
 import next.model.User;
 
-public class UpdateJdbcTemplate {
+public abstract class UpdateJdbcTemplate {
+    public abstract void setValuesForUpdate(User user, PreparedStatement pstmt, Connection con) throws SQLException;
+    public abstract String createQueryForUpdate();
+    
     public void update(User user, UserDao userDao) throws SQLException {
         PreparedStatement pstmt = null;
         Connection con = ConnectionManager.getConnection();
         try {
-            userDao.setValuesForUpdate(user, pstmt, con);
+            setValuesForUpdate(user, pstmt, con);
         } finally {
             if (pstmt != null) {
                 pstmt.close();
