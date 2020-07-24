@@ -11,26 +11,13 @@ import core.jdbc.ConnectionManager;
 import next.model.User;
 
 public class UserDao {
-    private static Connection con = null;
-    private static PreparedStatement pstmt = null;
-    private static ResultSet rs = null;
-    
     public void insert(User user) throws SQLException {
-        try {
-            con = ConnectionManager.getConnection();
-            setValuesForInsert(user, pstmt);
-        } finally {
-            if (pstmt != null) {
-                pstmt.close();
-            }
-
-            if (con != null) {
-                con.close();
-            }
-        }
+        UserDao userDao = new UserDao();
+        InsertJdbcTemplate insertJdbcTemplate = new InsertJdbcTemplate();
+        insertJdbcTemplate.insert(user, userDao);
     }
 
-    private void setValuesForInsert(User user, PreparedStatement pstmt) throws SQLException {
+    void setValuesForInsert(User user, PreparedStatement pstmt, Connection con) throws SQLException {
         String sql = createQueryForInsert();
         pstmt = con.prepareStatement(sql);
         pstmt.setString(1, user.getUserId());
@@ -41,25 +28,17 @@ public class UserDao {
         pstmt.executeUpdate();
     }
     
-    private String createQueryForInsert() {
+    String createQueryForInsert() {
         return "INSERT INTO USERS VALUES (?, ?, ?, ?)";
     }
     
     public void update(User user) throws SQLException {
-        try {
-            con = ConnectionManager.getConnection();
-            setValuesForUpdate(user, pstmt);
-        } finally {
-            if (pstmt != null) {
-                pstmt.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
+        UserDao userDao = new UserDao();
+        UpdateJdbcTemplate updateJdbcTemplate = new UpdateJdbcTemplate();
+        updateJdbcTemplate.update(user, userDao);
     }
 
-    private void setValuesForUpdate(User user, PreparedStatement pstmt) throws SQLException {
+    void setValuesForUpdate(User user, PreparedStatement pstmt, Connection con) throws SQLException {
         String sql = createQueryForUpdate();
         pstmt = con.prepareStatement(sql);
         pstmt.setString(1, user.getPassword());
@@ -70,7 +49,7 @@ public class UserDao {
         pstmt.executeUpdate();
     }
     
-    private String createQueryForUpdate() {
+    String createQueryForUpdate() {
         return "UPDATE USERS SET password=?, name=?, email=? WHERE userId=?";
     }
     
