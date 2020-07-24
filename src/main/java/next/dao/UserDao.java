@@ -11,19 +11,14 @@ import core.jdbc.ConnectionManager;
 import next.model.User;
 
 public class UserDao {
+    private static Connection con = null;
+    private static PreparedStatement pstmt = null;
+    private static ResultSet rs = null;
+    
     public void insert(User user) throws SQLException {
-        Connection con = null;
-        PreparedStatement pstmt = null;
         try {
             con = ConnectionManager.getConnection();
-            String sql = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
-            pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, user.getUserId());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getName());
-            pstmt.setString(4, user.getEmail());
-
-            pstmt.executeUpdate();
+            setValuesForInsert(user, pstmt);
         } finally {
             if (pstmt != null) {
                 pstmt.close();
@@ -35,20 +30,25 @@ public class UserDao {
         }
     }
 
+    private void setValuesForInsert(User user, PreparedStatement pstmt) throws SQLException {
+        String sql = createQueryForInsert();
+        pstmt = con.prepareStatement(sql);
+        pstmt.setString(1, user.getUserId());
+        pstmt.setString(2, user.getPassword());
+        pstmt.setString(3, user.getName());
+        pstmt.setString(4, user.getEmail());
+
+        pstmt.executeUpdate();
+    }
+    
+    private String createQueryForInsert() {
+        return "INSERT INTO USERS VALUES (?, ?, ?, ?)";
+    }
+    
     public void update(User user) throws SQLException {
-        // TODO 구현 필요함.
-        Connection con = null;
-        PreparedStatement pstmt = null;
         try {
             con = ConnectionManager.getConnection();
-            String sql = "UPDATE USERS SET password=?, name=?, email=? WHERE userId=?";
-            pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, user.getPassword());
-            pstmt.setString(2, user.getName());
-            pstmt.setString(3, user.getEmail());
-            pstmt.setString(4, user.getUserId());
-            
-            pstmt.executeUpdate();
+            setValuesForUpdate(user, pstmt);
         } finally {
             if (pstmt != null) {
                 pstmt.close();
@@ -59,6 +59,21 @@ public class UserDao {
         }
     }
 
+    private void setValuesForUpdate(User user, PreparedStatement pstmt) throws SQLException {
+        String sql = createQueryForUpdate();
+        pstmt = con.prepareStatement(sql);
+        pstmt.setString(1, user.getPassword());
+        pstmt.setString(2, user.getName());
+        pstmt.setString(3, user.getEmail());
+        pstmt.setString(4, user.getUserId());
+        
+        pstmt.executeUpdate();
+    }
+    
+    private String createQueryForUpdate() {
+        return "UPDATE USERS SET password=?, name=?, email=? WHERE userId=?";
+    }
+    
     public List<User> findAll() throws SQLException {
         // TODO 구현 필요함.
         Connection con = null;
