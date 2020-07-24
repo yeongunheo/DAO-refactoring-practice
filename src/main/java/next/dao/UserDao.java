@@ -33,7 +33,7 @@ public class UserDao {
             }
             
         };
-        insertJdbcTemplate.insert(user, userDao);
+        insertJdbcTemplate.insert(user);
     }
 
     public void update(User user) throws SQLException {
@@ -58,7 +58,7 @@ public class UserDao {
             }
             
         };
-        updateJdbcTemplate.update(user, userDao);
+        updateJdbcTemplate.update(user);
     }
 
     public List<User> findAll() throws SQLException {

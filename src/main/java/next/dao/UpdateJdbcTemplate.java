@@ -11,7 +11,7 @@ public abstract class UpdateJdbcTemplate {
     public abstract void setValuesForUpdate(User user, PreparedStatement pstmt, Connection con) throws SQLException;
     public abstract String createQueryForUpdate();
     
-    public void update(User user, UserDao userDao) throws SQLException {
+    public void update(User user) throws SQLException {
         PreparedStatement pstmt = null;
         Connection con = ConnectionManager.getConnection();
         try {
