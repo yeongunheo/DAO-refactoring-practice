@@ -9,7 +9,7 @@ import next.model.User;
 
 public abstract class InsertJdbcTemplate {
     public abstract void setValues(User user, PreparedStatement pstmt, Connection con) throws SQLException;
-    public abstract String createQueryForInsert();
+    public abstract String createQuery();
     
     public void insert(User user) throws SQLException {
         PreparedStatement pstmt = null;

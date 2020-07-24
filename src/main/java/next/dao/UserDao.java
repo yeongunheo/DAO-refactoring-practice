@@ -16,7 +16,7 @@ public class UserDao {
             
             @Override
             public void setValues(User user, PreparedStatement pstmt, Connection con) throws SQLException {
-                String sql = createQueryForInsert();
+                String sql = createQuery();
                 pstmt = con.prepareStatement(sql);
                 pstmt.setString(1, user.getUserId());
                 pstmt.setString(2, user.getPassword());
@@ -27,7 +27,7 @@ public class UserDao {
             }
 
             @Override
-            public String createQueryForInsert() {
+            public String createQuery() {
                 return "INSERT INTO USERS VALUES (?, ?, ?, ?)";
             }
             
