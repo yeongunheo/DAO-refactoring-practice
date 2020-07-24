@@ -12,7 +12,6 @@ import next.model.User;
 
 public class UserDao {
     public void insert(User user) throws SQLException {
-        UserDao userDao = new UserDao();
         InsertJdbcTemplate insertJdbcTemplate = new InsertJdbcTemplate() {
             
             @Override
@@ -37,7 +36,6 @@ public class UserDao {
     }
 
     public void update(User user) throws SQLException {
-        UserDao userDao = new UserDao();
         UpdateJdbcTemplate updateJdbcTemplate = new UpdateJdbcTemplate() {
 
             @Override
