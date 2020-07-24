@@ -40,7 +40,7 @@ public class UserDao {
 
             @Override
             public void setValues(User user, PreparedStatement pstmt, Connection con) throws SQLException {
-                String sql = createQueryForUpdate();
+                String sql = createQuery();
                 pstmt = con.prepareStatement(sql);
                 pstmt.setString(1, user.getPassword());
                 pstmt.setString(2, user.getName());
@@ -51,7 +51,7 @@ public class UserDao {
             }
 
             @Override
-            public String createQueryForUpdate() {
+            public String createQuery() {
                 return "UPDATE USERS SET password=?, name=?, email=? WHERE userId=?";
             }
             
