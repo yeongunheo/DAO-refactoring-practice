@@ -15,7 +15,7 @@ public class UserDao {
         InsertJdbcTemplate insertJdbcTemplate = new InsertJdbcTemplate() {
             
             @Override
-            public void setValuesForInsert(User user, PreparedStatement pstmt, Connection con) throws SQLException {
+            public void setValues(User user, PreparedStatement pstmt, Connection con) throws SQLException {
                 String sql = createQueryForInsert();
                 pstmt = con.prepareStatement(sql);
                 pstmt.setString(1, user.getUserId());
