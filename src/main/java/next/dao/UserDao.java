@@ -39,7 +39,7 @@ public class UserDao {
         UpdateJdbcTemplate updateJdbcTemplate = new UpdateJdbcTemplate() {
 
             @Override
-            public void setValuesForUpdate(User user, PreparedStatement pstmt, Connection con) throws SQLException {
+            public void setValues(User user, PreparedStatement pstmt, Connection con) throws SQLException {
                 String sql = createQueryForUpdate();
                 pstmt = con.prepareStatement(sql);
                 pstmt.setString(1, user.getPassword());
