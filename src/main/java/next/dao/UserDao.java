@@ -12,7 +12,7 @@ import next.model.User;
 
 public class UserDao {
     public void insert(User user) throws SQLException {
-        InsertJdbcTemplate insertJdbcTemplate = new InsertJdbcTemplate() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate() {
             
             @Override
             public void setValues(User user, PreparedStatement pstmt, Connection con) throws SQLException {
@@ -32,11 +32,11 @@ public class UserDao {
             }
             
         };
-        insertJdbcTemplate.insert(user);
+        jdbcTemplate.update(user);
     }
 
     public void update(User user) throws SQLException {
-        UpdateJdbcTemplate updateJdbcTemplate = new UpdateJdbcTemplate() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate() {
 
             @Override
             public void setValues(User user, PreparedStatement pstmt, Connection con) throws SQLException {
@@ -56,7 +56,7 @@ public class UserDao {
             }
             
         };
-        updateJdbcTemplate.update(user);
+        jdbcTemplate.update(user);
     }
 
     public List<User> findAll() throws SQLException {
