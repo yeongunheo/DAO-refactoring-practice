@@ -5,17 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import core.jdbc.ConnectionManager;
-import next.model.User;
 
 public abstract class JdbcTemplate {
-    public abstract void setValues(User user, PreparedStatement pstmt, Connection con) throws SQLException;
-    public abstract String createQuery();
+    public abstract void setValues(PreparedStatement pstmt, Connection con, String sql) throws SQLException;
     
-    public void update(User user) throws SQLException {
+    public void update(String sql) throws SQLException {
         PreparedStatement pstmt = null;
         Connection con = ConnectionManager.getConnection();
         try {
-            setValues(user, pstmt, con);
+            setValues(pstmt, con, sql);
         } finally {
             if (pstmt != null) {
                 pstmt.close();
