@@ -50,35 +50,18 @@ public class UserDao {
     }
     
     public List<User> findAll() throws SQLException {
-        // TODO 구현 필요함.
-        try {
-            con = ConnectionManager.getConnection();
-            String sql = createQueryForFindAll();
-            pstmt = con.prepareStatement(sql);
-            
-            rs = pstmt.executeQuery();
-            
-            List<User> userList = (List<User>) mapRowForFindAll(rs);
-            
-            return userList;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (pstmt != null) {
-                pstmt.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
+        UserDao userDao = new UserDao();
+        FindAllJdbcTemplate findAllJdbcTemplate = new FindAllJdbcTemplate();
+        List<User> userList = findAllJdbcTemplate.findAll(userDao);
+        
+        return userList;
     }
     
-    private String createQueryForFindAll() {
+    String createQueryForFindAll() {
         return "SELECT userId, password, name, email FROM USERS";
     }
     
-    private Object mapRowForFindAll(ResultSet rs) throws SQLException {
+    Object mapRowForFindAll(ResultSet rs) throws SQLException {
         List<User> userList = new ArrayList<User>();
         while (rs.next()) {
             User user = new User(
@@ -92,41 +75,22 @@ public class UserDao {
         return userList;
     }
     
-
     public User findByUserId(String userId) throws SQLException {
-        try {
-            con = ConnectionManager.getConnection();
-            String sql = createQueryForByUserId();
-            pstmt = con.prepareStatement(sql);
-            setValuesForByUserId(pstmt, userId);
-
-            rs = pstmt.executeQuery();
-
-            User user = (User) mapRowForByUserId(rs);
-
-            return user;
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (pstmt != null) {
-                pstmt.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
+        UserDao userDao = new UserDao();
+        FindByUserIdJdbcTemplate findByUserIdJdbcTemplate = new FindByUserIdJdbcTemplate();
+        User user = findByUserIdJdbcTemplate.findByUserId(userDao, userId);
+        return user;
     }
     
-    private String createQueryForByUserId() {
+    String createQueryForByUserId() {
         return "SELECT userId, password, name, email FROM USERS WHERE userid=?";
     }
     
-    private void setValuesForByUserId(PreparedStatement pstmt, String userId) throws SQLException {
+    void setValuesForByUserId(PreparedStatement pstmt, String userId) throws SQLException {
         pstmt.setString(1, userId);
     }
     
-    private Object mapRowForByUserId(ResultSet rs) throws SQLException {
+    Object mapRowForByUserId(ResultSet rs) throws SQLException {
         User user = null;
         if (rs.next()) {
             user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
