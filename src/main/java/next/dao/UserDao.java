@@ -53,7 +53,7 @@ public class UserDao {
         FindAllJdbcTemplate findAllJdbcTemplate = new FindAllJdbcTemplate() {
 
             @Override
-            public Object mapRowForFindAll(ResultSet rs) throws SQLException {
+            public Object mapRow(ResultSet rs) throws SQLException {
                 List<User> userList = new ArrayList<User>();
                 while (rs.next()) {
                     User user = new User(
@@ -68,7 +68,7 @@ public class UserDao {
             }
 
             @Override
-            public String createQueryForFindAll() {
+            public String createQuery() {
                 return "SELECT userId, password, name, email FROM USERS";
             }
             
@@ -81,12 +81,12 @@ public class UserDao {
         FindByUserIdJdbcTemplate findByUserIdJdbcTemplate = new FindByUserIdJdbcTemplate() {
 
             @Override
-            public void setValuesForByUserId(PreparedStatement pstmt, String userId) throws SQLException {
+            public void setValues(PreparedStatement pstmt, String userId) throws SQLException {
                 pstmt.setString(1, userId);
             }
 
             @Override
-            public Object mapRowForByUserId(ResultSet rs) throws SQLException {
+            public Object mapRow(ResultSet rs) throws SQLException {
                 User user = null;
                 if (rs.next()) {
                     user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
@@ -96,7 +96,7 @@ public class UserDao {
             }
 
             @Override
-            public String createQueryForByUserId() {
+            public String createQuery() {
                 return "SELECT userId, password, name, email FROM USERS WHERE userid=?";
             }
             

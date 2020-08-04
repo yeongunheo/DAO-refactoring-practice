@@ -9,20 +9,20 @@ import core.jdbc.ConnectionManager;
 import next.model.User;
 
 public abstract class FindByUserIdJdbcTemplate {
-    public abstract void setValuesForByUserId(PreparedStatement pstmt, String userId) throws SQLException;
-    public abstract Object mapRowForByUserId(ResultSet rs) throws SQLException;
-    public abstract String createQueryForByUserId();
+    public abstract void setValues(PreparedStatement pstmt, String userId) throws SQLException;
+    public abstract Object mapRow(ResultSet rs) throws SQLException;
+    public abstract String createQuery();
     
     public User findByUserId(Connection con, PreparedStatement pstmt, ResultSet rs, String userId) throws SQLException {
         try {
             con = ConnectionManager.getConnection();
-            String sql = createQueryForByUserId();
+            String sql = createQuery();
             pstmt = con.prepareStatement(sql);
-            setValuesForByUserId(pstmt, userId);
+            setValues(pstmt, userId);
 
             rs = pstmt.executeQuery();
 
-            User user = (User) mapRowForByUserId(rs);
+            User user = (User) mapRow(rs);
 
             return user;
         } finally {
