@@ -11,6 +11,10 @@ import core.jdbc.ConnectionManager;
 import next.model.User;
 
 public class UserDao {
+    Connection con = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    
     public void insert(User user) throws SQLException {
         JdbcTemplate jdbcTemplate = new JdbcTemplate() {
             
@@ -44,27 +48,17 @@ public class UserDao {
         };
         jdbcTemplate.update("UPDATE USERS SET password=?, name=?, email=? WHERE userId=?");
     }
-
+    
     public List<User> findAll() throws SQLException {
         // TODO 구현 필요함.
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
         try {
             con = ConnectionManager.getConnection();
-            String sql = "SELECT userId, password, name, email FROM USERS";
+            String sql = createQueryForFindAll();
             pstmt = con.prepareStatement(sql);
             
             rs = pstmt.executeQuery();
-            List<User> userList = new ArrayList<User>();
-            while (rs.next()) {
-                User user = new User(
-                        rs.getString("userId"),
-                        rs.getString("password"),
-                        rs.getString("name"),
-                        rs.getString("email"));
-                userList.add(user);
-            }
+            
+            List<User> userList = (List<User>) mapRowForFindAll(rs);
             
             return userList;
         } finally {
@@ -79,24 +73,36 @@ public class UserDao {
             }
         }
     }
+    
+    private String createQueryForFindAll() {
+        return "SELECT userId, password, name, email FROM USERS";
+    }
+    
+    private Object mapRowForFindAll(ResultSet rs) throws SQLException {
+        List<User> userList = new ArrayList<User>();
+        while (rs.next()) {
+            User user = new User(
+                    rs.getString("userId"),
+                    rs.getString("password"),
+                    rs.getString("name"),
+                    rs.getString("email"));
+            userList.add(user);
+        }
+        
+        return userList;
+    }
+    
 
     public User findByUserId(String userId) throws SQLException {
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
         try {
             con = ConnectionManager.getConnection();
-            String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
+            String sql = createQueryForByUserId();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, userId);
+            setValuesForByUserId(pstmt, userId);
 
             rs = pstmt.executeQuery();
 
-            User user = null;
-            if (rs.next()) {
-                user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
-                        rs.getString("email"));
-            }
+            User user = (User) mapRowForByUserId(rs);
 
             return user;
         } finally {
@@ -110,5 +116,22 @@ public class UserDao {
                 con.close();
             }
         }
+    }
+    
+    private String createQueryForByUserId() {
+        return "SELECT userId, password, name, email FROM USERS WHERE userid=?";
+    }
+    
+    private void setValuesForByUserId(PreparedStatement pstmt, String userId) throws SQLException {
+        pstmt.setString(1, userId);
+    }
+    
+    private Object mapRowForByUserId(ResultSet rs) throws SQLException {
+        User user = null;
+        if (rs.next()) {
+            user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
+                    rs.getString("email"));
+        }
+        return user;
     }
 }
