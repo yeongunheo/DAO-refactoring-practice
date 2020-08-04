@@ -1,32 +1,39 @@
 package next.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import core.jdbc.ConnectionManager;
 import next.model.User;
 
-public class FindByUserIdJdbcTemplate {
-    public User findByUserId(UserDao userDao, String userId) throws SQLException {
+public abstract class FindByUserIdJdbcTemplate {
+    public abstract void setValuesForByUserId(PreparedStatement pstmt, String userId) throws SQLException;
+    public abstract Object mapRowForByUserId(ResultSet rs) throws SQLException;
+    public abstract String createQueryForByUserId();
+    
+    public User findByUserId(Connection con, PreparedStatement pstmt, ResultSet rs, String userId) throws SQLException {
         try {
-            userDao.con = ConnectionManager.getConnection();
-            String sql = userDao.createQueryForByUserId();
-            userDao.pstmt = userDao.con.prepareStatement(sql);
-            userDao.setValuesForByUserId(userDao.pstmt, userId);
+            con = ConnectionManager.getConnection();
+            String sql = createQueryForByUserId();
+            pstmt = con.prepareStatement(sql);
+            setValuesForByUserId(pstmt, userId);
 
-            userDao.rs = userDao.pstmt.executeQuery();
+            rs = pstmt.executeQuery();
 
-            User user = (User) userDao.mapRowForByUserId(userDao.rs);
+            User user = (User) mapRowForByUserId(rs);
 
             return user;
         } finally {
-            if (userDao.rs != null) {
-                userDao.rs.close();
+            if (rs != null) {
+                rs.close();
             }
-            if (userDao.pstmt != null) {
-                userDao.pstmt.close();
+            if (pstmt != null) {
+                pstmt.close();
             }
-            if (userDao.con != null) {
-                userDao.con.close();
+            if (con != null) {
+                con.close();
             }
         }
     }
